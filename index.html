@@ -823,7 +823,15 @@ body::after{
 
 /* ── MOBILE (< 768px): foto background aktif, bunga lebih kecil & rapat ke pojok ── */
 @media (max-width:767px){
+
+  #coverGuestRelation{
+    color: #fff;
+  }
   /* TL & TR — kecil, naik ke atas */
+  #coverGuestName{
+    color:#fff;
+    text-shadow:0 1px 12px rgba(0,0,0,0.28);
+  }
   #cvTL{
     width:min(130px,34vw);
     opacity:0.82;
@@ -853,6 +861,17 @@ body::after{
 
 /* ── DESKTOP (≥ 768px): tanpa foto background, bunga lebih besar + teks gelap ── */
 @media (min-width:768px){
+
+  #coverGuestRelation {
+    color: var(--ink);
+    text-shadow:none;
+  }
+
+  #coverGuestName{
+    color:var(--ink);
+    text-shadow:none;
+  }
+
   /* Sembunyikan hero photo — desktop pakai cream background bersih */
   #coverSplash .cover-hero-photo{
     display:none;
@@ -878,6 +897,22 @@ body::after{
     background:transparent;
     backdrop-filter:none;
     -webkit-backdrop-filter:none;
+  }
+  /* Nama tamu — desktop pakai warna gelap seperti elemen lain */
+  #coverSplash #coverGuestBox p:first-child{
+    color:var(--muted);
+    text-shadow:none;
+  }
+  #coverSplash #coverGuestName{
+    color:var(--ink);
+    text-shadow:none;
+  }
+  #coverSplash #coverGuestBox div > p:last-child{
+    color:var(--gold);
+  }
+  #coverSplash #coverGuestBox div{
+    border-top-color:rgba(184,151,58,0.35);
+    border-bottom-color:rgba(184,151,58,0.35);
   }
   /* Bunga desktop — lebih besar, multiply blend over cream */
   #cvTL{
@@ -1277,7 +1312,16 @@ body::after{
 
     <p class="cover-date">Ahad, 19 April 2026 &nbsp;·&nbsp; Bogor</p>
 
-    <button class="cover-btn" onclick="openInvitation()">
+    <!-- Nama tamu dari URL parameter ?to=NamaTamu -->
+    <div id="coverGuestBox" style="margin-bottom:36px;text-align:center;opacity:0;animation:fadeUp 1s ease 1.4s forwards">
+      <p style="font-family:'Jost',sans-serif;font-size:9px;letter-spacing:0.36em;text-transform:uppercase;color:rgba(255,255,255,0.65);font-weight:300;margin-bottom:10px">Kepada Yth.</p>
+      <div style="border-top:1px solid rgba(184,151,58,0.55);border-bottom:1px solid rgba(184,151,58,0.55);padding:10px 28px;display:inline-block">
+        <p id="coverGuestName" style="font-family:'Cormorant Garamond',serif;font-size:clamp(18px,5.5vw,28px);font-weight:400;font-style:italic;line-height:1.3;text-shadow:0 1px 12px rgba(0,0,0,0.35)">Tamu Undangan</p>
+        <p id="coverGuestRelation" style="font-family:'Jost',sans-serif;font-size:9px;letter-spacing:0.20em;text-transform:uppercase;font-weight:300;margin-top:4px">& keluarga</p>
+      </div>
+    </div>
+
+    <button class="cover-btn" onclick="openInvitation()" style="opacity:0;animation:coverBtnPulse 2.5s ease 2.4s infinite, fadeUp 1s ease 1.7s both">
       <span>Buka Undangan</span>
     </button>
   </div>
@@ -1292,7 +1336,7 @@ body::after{
 <audio id="bgAudio" loop preload="auto" src="Cinta Terakhir.mp3"></audio>
 <input type="file" id="music-input" accept="audio/*" style="display:none"/>
 <div class="music-bar">
-  <div class="music-disc" id="musicDisc" onclick="toggleMusic()">
+  <div class="music-disc" id="musicDisc" onclick=s"toggleMusic()">
     <svg id="iconPlay" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
     <svg id="iconPause" viewBox="0 0 24 24" style="display:none"><rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/></svg>
   </div>
@@ -2006,6 +2050,17 @@ outer.addEventListener('touchend',e=>{
   if(Math.abs(dx)>40)dx<0?galNext():galPrev();
   touchX=null;
 });
+
+/* ── NAMA TAMU DARI URL (?to=NamaTamu) ── */
+(function(){
+  const params = new URLSearchParams(window.location.search);
+  const nama = params.get('to');
+  if(nama && nama.trim()){
+    const decoded = decodeURIComponent(nama.trim());
+    const el = document.getElementById('coverGuestName');
+    if(el) el.textContent = decoded;
+  }
+})();
 
 /* ── RSVP — Google Sheets via Apps Script ── */
 // ⚠️ GANTI URL INI dengan URL deploy Google Apps Script kamu
